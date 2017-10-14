@@ -1,20 +1,11 @@
 import React from 'react';
-import { graphql } from 'graphql';
 import { render } from 'react-dom';
+import { QueryRenderer, graphql } from 'react-relay';
+
+import environment from './environment';
 
 import Hello from './Hello';
 import schema from './schema';
-
-graphql(
-  schema,
-  `
-  query {
-    hello
-  }
-  `,
-).then(result => {
-  console.log(result);
-});
 
 const styles = {
   fontFamily: 'sans-serif',
@@ -22,10 +13,27 @@ const styles = {
 };
 
 const App = () => (
-  <div style={styles}>
-    <Hello name="CodeSandbox" />
-    <h2 />
-  </div>
+  <QueryRenderer
+    environment={environment}
+    query={graphql`
+      query srcQuery {
+        hello
+      }
+    `}
+    render={({ error, props }) => {
+      if (error) {
+        return <div>{error.message}</div>;
+      } else if (props) {
+        return (
+          <div style={styles}>
+            <Hello name={props.hello} />
+            <h2 />
+          </div>
+        );
+      }
+      return <div>Loading</div>;
+    }}
+  />
 );
 
 render(<App />, document.getElementById('root'));
