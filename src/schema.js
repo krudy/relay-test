@@ -1,14 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
 
-const schemaDefinition = `
-type Query {
-  hello: String!
-}
-
-schema {
-  query: Query
-}
-`;
+import schemaDefinition from './schema.graphql';
 
 const schema = makeExecutableSchema({
   typeDefs: schemaDefinition,
